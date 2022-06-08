@@ -1,0 +1,40 @@
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    height: 100vh;
+   
+}
+
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 20px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+   
+}
+.bouncer {
+    flex-grow: 1;
+}
+.ball {
+    border-radius: 100%;
+    border-color:  #000;
+    border-width: 1px;
+    border-style: solid;
+
+}
+.bouncer__table {
+    width: 480px;
+    height: 320px;
+    background-color: #eee;
+    border: 1px solid #000;
+}
+
+.table_canvas {
+    background-color: #ddd;
+    border: 1px solid #555;
+    border-radius: 5px;
+}
