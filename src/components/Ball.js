@@ -2,48 +2,37 @@ import { $ } from "../core/dom";
 import { Point } from "../core/Point";
 import { Vector } from "../core/Vector";
 
+const SLOW_COEFFICIENT = 0.998;
+const BREAK_LIMIT = 0.03;
 export class Ball extends Vector {
-  constructor(canvas, id, angle = 45, velocity = 0, radius = 5) {
+  constructor({
+    canvas,
+    id,
+    position,
+    angle = 45,
+    velocity = 0,
+    radius = 5,
+    stroke = true,
+    style = "black"
+  }) {
     super(angle, velocity);
     this.canvas = canvas;
     this.id = id;
     this.radius = radius;
-    this.position = new Point(radius, radius);
+    this.position = position;
     this.intervalId = null;
-    this.init();
+    this.stroke = stroke;
+    this.style = style;
   }
 
   static className = "ball";
 
-  init() {
-    // const { width, height } = this.ctx.canvas;
-    // this.tableSize = { width, height };
-  }
-  redraw() {
-    if (this.velocity > 0) {
-      this.nextPosition();
-    }
-    this.draw();
-  }
   draw() {
-    // this.ctx.clearRect(0, 0, this.tableSize.width, this.tableSize.height);
-    // this.ctx.beginPath();
-    // this.ctx.arc(
-    //   this.position.x,
-    //   this.position.y,
-    //   this.radius,
-    //   0,
-    //   Math.PI * 2,
-    //   false
-    // );
-    // this.ctx.strokeStyle = "black";
-    // this.ctx.stroke();
-    // this.ctx.closePath();
     this.canvas.circle({
       centerPoint: this.position,
       radius: this.radius,
-      stroke: true,
-      style: "black"
+      stroke: this.stroke,
+      style: this.style
     });
   }
 
@@ -51,38 +40,37 @@ export class Ball extends Vector {
     this.setVelocity(0);
   }
   nextPosition() {
-    const dY = Math.sin(Vector.gradToRad(this.angle)) * this.velocity;
-    const dX = Math.cos(Vector.gradToRad(this.angle)) * this.velocity;
+    const dY = Math.sin(this.angle.toRad()) * this.velocity;
+    const dX = Math.cos(this.angle.toRad()) * this.velocity;
 
-    this.velocity *= .998;
+    this.velocity *= SLOW_COEFFICIENT;
 
-    if (this.velocity < 0.03) {
-      this.velocity = 0;
+    if (this.velocity < BREAK_LIMIT) {
+      this.stop();
     }
 
     this.position.add(dX, dY);
-    this.checkBounds();
   }
   checkBounds() {
     if (this.position.y + this.radius > this.canvas.coords.height) {
       this.position.setY(
         2 * this.canvas.coords.height - this.position.y - 2 * this.radius
       );
-      this.mirrorY();
+      this.angle.mirrorY();
     }
     if (this.position.y - this.radius < 0) {
       this.position.setY(2 * this.radius - this.position.y);
-      this.mirrorY();
+      this.angle.mirrorY();
     }
     if (this.position.x + this.radius > this.canvas.coords.width) {
       this.position.setX(
         2 * this.canvas.coords.width - this.position.x - 2 * this.radius
       );
-      this.mirrorX();
+      this.angle.mirrorX();
     }
     if (this.position.x - this.radius < 0) {
       this.position.setX(2 * this.radius - this.position.x);
-      this.mirrorX();
+      this.angle.mirrorX();
     }
   }
 }

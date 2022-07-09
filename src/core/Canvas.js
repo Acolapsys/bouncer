@@ -1,5 +1,7 @@
 import { BouncerComponent } from "@/components/BouncerComponent";
+import { Angle } from "./Angle";
 import { $ } from "./dom";
+import { Vector } from "./Vector";
 
 export class Canvas {
   constructor(id, className, width, height) {
@@ -36,4 +38,11 @@ export class Canvas {
   get coords() {
     return this.$el.getCoords();
   }
+
+  getDistance(point1, point2) {
+    const dX = point1.x - point2.x;
+    const dY = point1.y - point2.y;
+    return Math.hypot(dX, dY);
+  }
+
 }
